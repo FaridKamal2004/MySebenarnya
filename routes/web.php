@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgencyController;
+<<<<<<< HEAD
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InquiryController;
@@ -28,11 +29,17 @@ Route::get('/', function () {
             return redirect()->route('public.dashboard');
         }
     }
+=======
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
     return view('welcome');
 });
 
 Auth::routes();
 
+<<<<<<< HEAD
 // Redirect to dashboard based on role
 Route::get('/home', function() {
     if (Auth::check()) {
@@ -144,3 +151,10 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 });
+=======
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/agency', [AgencyController::class,'index'])->name('agencies.index');
+Route::get('/agency/create', [AgencyController::class,'create'])->name('agencies.create');
+Route::post('/agency', [AgencyController::class,'store'])->name('agencies.store');
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0

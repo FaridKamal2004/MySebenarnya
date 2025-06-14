@@ -2,7 +2,12 @@
 
 namespace Database\Seeders;
 
+<<<<<<< HEAD
 use App\Models\Category;
+=======
+use App\Models\User;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+<<<<<<< HEAD
         // Create categories
         $categories = [
             ['name' => 'General Inquiry', 'description' => 'General inquiries about MCMC services'],
@@ -29,6 +35,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             RolesAndPermissionsSeeder::class,
+=======
+        // User::factory(10)->create();
+
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -33,3 +34,19 @@ class Agency extends Model
         return $this->hasMany(Assignment::class);
     }
 }
+=======
+use Illuminate\Database\Eloquent\Model;
+
+class agency extends Model
+{
+    protected $fillable=[
+        'name',
+        'contact'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }        
+}
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0

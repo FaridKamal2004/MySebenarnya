@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
+=======
+<!doctype html>
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+<<<<<<< HEAD
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'MCMC Inquiry Management System') }}</title>
@@ -151,6 +156,27 @@
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'MCMC Inquiry Management System') }}
+=======
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+
+    <!-- Scripts -->
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+</head>
+<body>
+    <div id="app">
+        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -159,6 +185,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+<<<<<<< HEAD
                         @auth
                             @if(Auth::user()->hasRole('mcmc'))
                                 <li class="nav-item">
@@ -219,6 +246,9 @@
                                 </li>
                             @endif
                         @endauth
+=======
+
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -243,6 +273,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+<<<<<<< HEAD
                                     <a class="dropdown-item" href="{{ route('profile.show') }}">
                                         <i class="fas fa-user me-2"></i> Profile
                                     </a>
@@ -251,6 +282,12 @@
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         <i class="fas fa-sign-out-alt me-2"></i> {{ __('Logout') }}
+=======
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -264,6 +301,7 @@
             </div>
         </nav>
 
+<<<<<<< HEAD
         <main class="container py-4">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -299,5 +337,11 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     @yield('scripts')
+=======
+        <main class="py-4">
+            @yield('content')
+        </main>
+    </div>
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 </body>
 </html>

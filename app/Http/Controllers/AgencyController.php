@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Http\Requests\AgencyCreationRequest;
 use App\Models\Agency;
 use App\Models\User;
@@ -9,10 +10,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+=======
+use App\Models\agency;
+use Illuminate\Http\Request;
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 
 class AgencyController extends Controller
 {
     /**
+<<<<<<< HEAD
      * Display a listing of the agencies.
      */
     public function index()
@@ -149,3 +155,67 @@ class AgencyController extends Controller
             ->with('success', 'Agency deleted successfully.');
     }
 }
+=======
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return view('agencies.index');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('agencies.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+            'contact' => 'required'
+        ]);
+
+        $request->user()->agency()->create($validated);
+
+        return redirect()->route('agencies.index')->with('success', 'You have created a Agency.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(agency $agency)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(agency $agency)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, agency $agency)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(agency $agency)
+    {
+        //
+    }
+}
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0

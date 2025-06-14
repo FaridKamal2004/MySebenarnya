@@ -2,10 +2,15 @@
 
 namespace Database\Seeders;
 
+<<<<<<< HEAD
 use App\Models\Agency;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+=======
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 
 class AgencySeeder extends Seeder
 {
@@ -14,6 +19,7 @@ class AgencySeeder extends Seeder
      */
     public function run(): void
     {
+<<<<<<< HEAD
         $agencies = [
             [
                 'name' => 'Ministry of Health',
@@ -54,3 +60,8 @@ class AgencySeeder extends Seeder
         }
     }
 }
+=======
+        //
+    }
+}
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,16 +13,32 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
+=======
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 
     /**
      * The attributes that are mass assignable.
      *
+<<<<<<< HEAD
      * @var array<int, string>
+=======
+     * @var list<string>
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
      */
     protected $fillable = [
         'name',
         'email',
         'password',
+<<<<<<< HEAD
         'agency_id',
     ];
     
@@ -114,11 +131,18 @@ class User extends Authenticatable
             return collect([]);
         }
     }
+=======
+    ];
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
 
     /**
      * The attributes that should be hidden for serialization.
      *
+<<<<<<< HEAD
      * @var array<int, string>
+=======
+     * @var list<string>
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
      */
     protected $hidden = [
         'password',
@@ -126,6 +150,7 @@ class User extends Authenticatable
     ];
 
     /**
+<<<<<<< HEAD
      * The attributes that should be cast.
      *
      * @var array<string, string>
@@ -165,5 +190,22 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+=======
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+
+    public function agency()
+    {
+        return $this->hasMany(Agency::class);
+>>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
     }
 }
