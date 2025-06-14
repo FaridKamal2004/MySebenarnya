@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +12,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create categories
+        $categories = [
+            ['name' => 'General Inquiry', 'description' => 'General inquiries about MCMC services'],
+            ['name' => 'Technical Issue', 'description' => 'Technical issues related to telecommunications'],
+            ['name' => 'Complaint', 'description' => 'Complaints about service providers'],
+            ['name' => 'Suggestion', 'description' => 'Suggestions for improvement'],
+            ['name' => 'Other', 'description' => 'Other inquiries'],
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
+
+        // Run roles and permissions seeder
+        $this->call([
+            RoleSeeder::class,
+            RolesAndPermissionsSeeder::class,
         ]);
     }
 }
