@@ -9,65 +9,95 @@ class Inquiry extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'inquiries';
+
     protected $fillable = [
-        'user_id',
-        'title',
-        'description',
-        'category_id',
+        'InquiryId',
+        'Title',
+        'Description',
+        'sourceURL',
+        'attachment',
+        'submitted_by',
+        'agency_id',
         'status',
-        'attachment_path',
+        'submitted_at',
+        'updated_at',
     ];
 
     /**
-     * Get the user that owns the inquiry.
+     * Create a new inquiry.
+     *
+     * @param array $data
+     * @return Inquiry
      */
-    public function user()
+    public static function createInquiry(array $data)
     {
-        return $this->belongsTo(User::class);
+        return self::create($data);
     }
 
     /**
-     * Get the category that owns the inquiry.
+     * Update the status of the inquiry.
+     *
+     * @param string $status
+     * @return bool
      */
-    public function category()
+    public function updateStatus(string $status)
     {
-        return $this->belongsTo(Category::class);
+        $this->status = $status;
+        return $this->save();
     }
 
     /**
-     * Get the assignments for the inquiry.
+     * Assign the inquiry to an agency.
+     *
+     * @param int $agencyId
+     * @return bool
      */
-    public function assignments()
+    public function assignToAgency(int $agencyId)
     {
-        return $this->hasMany(Assignment::class);
+        $this->agency_id = $agencyId;
+        return $this->save();
     }
 
     /**
-     * Get the status updates for the inquiry.
+     * Get the inquiry history.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function statusUpdates()
+    public function getInquiryHistory()
     {
-        return $this->hasMany(StatusUpdate::class);
+        return $this->progress()->orderBy('created_at', 'desc')->get();
     }
 
     /**
-     * Get the latest assignment for the inquiry.
+     * Get the public user that submitted this inquiry.
      */
-    public function latestAssignment()
+    public function submitter()
     {
-        return $this->hasOne(Assignment::class)->latest();
+        return $this->belongsTo(PublicUser::class, 'submitted_by', 'id');
     }
 
     /**
-     * Get the latest status update for the inquiry.
+     * Get the agency assigned to this inquiry.
      */
-    public function latestStatusUpdate()
+    public function agency()
     {
-        return $this->hasOne(StatusUpdate::class)->latest();
+        return $this->belongsTo(AgencyUser::class, 'agency_id', 'id');
+    }
+
+    /**
+     * Get the progress updates for this inquiry.
+     */
+    public function progress()
+    {
+        return $this->hasMany(InquiryProgress::class, 'InquiryID', 'InquiryId');
+    }
+
+    /**
+     * Get the assignment for this inquiry.
+     */
+    public function assignment()
+    {
+        return $this->hasOne(Assignment::class, 'Inquiry_Id', 'InquiryId');
     }
 }

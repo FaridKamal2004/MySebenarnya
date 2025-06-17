@@ -40,6 +40,18 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'public' => [
+            'driver' => 'session',
+            'provider' => 'public_users',
+        ],
+        'agency' => [
+            'driver' => 'session',
+            'provider' => 'agency_users',
+        ],
+        'mcmc' => [
+            'driver' => 'session',
+            'provider' => 'mcmc_users',
+        ],
     ],
 
     /*
@@ -64,11 +76,18 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'public_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\PublicUser::class,
+        ],
+        'agency_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\AgencyUser::class,
+        ],
+        'mcmc_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\McmcUser::class,
+        ],
     ],
 
     /*
@@ -94,6 +113,24 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'public_users' => [
+            'provider' => 'public_users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'agency_users' => [
+            'provider' => 'agency_users',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'mcmc_users' => [
+            'provider' => 'mcmc_users',
+            'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],
