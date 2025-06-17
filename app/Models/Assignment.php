@@ -9,61 +9,63 @@ class Assignment extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'assignments';
+
     protected $fillable = [
-        'inquiry_id',
-        'agency_id',
-        'assigned_by',
-        'notes',
-        'status', // pending, accepted, rejected
-        'feedback',
-        'assigned_at',
-        'responded_at',
+        'Id',
+        'Inquiry_Id',
+        'Agency_Id',
+        'Assigned_by',
+        'Assigned_at',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'assigned_at' => 'datetime',
-        'responded_at' => 'datetime',
+        'Assigned_at' => 'datetime',
     ];
 
     /**
-     * Get the inquiry that owns the assignment.
+     * Create a new assignment.
+     *
+     * @param array $data
+     * @return Assignment
+     */
+    public static function createAssignment(array $data)
+    {
+        return self::create($data);
+    }
+
+    /**
+     * Get assignments by inquiry ID.
+     *
+     * @param int $inquiryId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getAssignmentByInquiry(int $inquiryId)
+    {
+        return self::where('Inquiry_Id', $inquiryId)->get();
+    }
+
+    /**
+     * Get the inquiry that owns this assignment.
      */
     public function inquiry()
     {
-        return $this->belongsTo(Inquiry::class);
+        return $this->belongsTo(Inquiry::class, 'Inquiry_Id', 'InquiryId');
     }
 
     /**
-     * Get the agency that owns the assignment.
+     * Get the agency that owns this assignment.
      */
     public function agency()
     {
-        return $this->belongsTo(Agency::class);
+        return $this->belongsTo(AgencyUser::class, 'Agency_Id', 'id');
     }
 
     /**
-     * Get the user that assigned the inquiry.
+     * Get the MCMC user that created this assignment.
      */
     public function assignedBy()
     {
-        return $this->belongsTo(User::class, 'assigned_by');
-    }
-
-    /**
-     * Get the status updates for the assignment.
-     */
-    public function statusUpdates()
-    {
-        return $this->hasMany(StatusUpdate::class);
+        return $this->belongsTo(McmcUser::class, 'Assigned_by', 'id');
     }
 }

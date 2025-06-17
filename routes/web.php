@@ -1,15 +1,8 @@
 <?php
 
-use App\Http\Controllers\AgencyController;
-<<<<<<< HEAD
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\InquiryController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\StatusController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AssignmentManagementController;
+use App\Http\Controllers\InquiryManagementController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,141 +13,139 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', function () {
-    if (Auth::check()) {
-        if (Auth::user()->hasRole('mcmc')) {
-            return redirect()->route('mcmc.dashboard');
-        } elseif (Auth::user()->hasRole('agency')) {
-            return redirect()->route('agency.dashboard');
-        } else {
-            return redirect()->route('public.dashboard');
-        }
-    }
-=======
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
->>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
     return view('welcome');
 });
 
-Auth::routes();
-
-<<<<<<< HEAD
-// Redirect to dashboard based on role
-Route::get('/home', function() {
-    if (Auth::check()) {
-        if (Auth::user()->hasRole('mcmc')) {
-            return redirect()->route('mcmc.dashboard');
-        } elseif (Auth::user()->hasRole('agency')) {
-            return redirect()->route('agency.dashboard');
-        } else {
-            return redirect()->route('public.dashboard');
-        }
-    }
-    return redirect('/');
-})->name('home');
-
-// Profile routes (accessible by all authenticated users)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/profile/password', [ProfileController::class, 'editPassword'])->name('profile.edit.password');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update.password');
+// Test route for debugging
+Route::get('/test-auth', function () {
+    $publicUsers = \App\Models\PublicUser::all();
+    $mcmcUsers = \App\Models\McmcUser::all();
+    $agencyUsers = \App\Models\AgencyUser::all();
+    $roles = \App\Models\RoleUser::all();
+    
+    return [
+        'public_users' => $publicUsers,
+        'mcmc_users' => $mcmcUsers,
+        'agency_users' => $agencyUsers,
+        'roles' => $roles,
+    ];
 });
 
+// Authentication routes
+Route::get('/login', [UserManagementController::class, 'showLogin'])->name('login');
+Route::post('/login', [UserManagementController::class, 'login'])->name('login.submit');
+Route::get('/register', [UserManagementController::class, 'showRegister'])->name('register');
+Route::post('/register', [UserManagementController::class, 'register'])->name('register.submit');
+Route::post('/logout', [UserManagementController::class, 'logout'])->name('logout');
+Route::get('/verify-email/{token}', [UserManagementController::class, 'verifyEmail'])->name('verify.email');
+Route::post('/password/email', [UserManagementController::class, 'sendPasswordResetLink'])->name('password.email');
+Route::get('/first-login-reset', function() {
+    return view('auth.first_login_reset');
+})->name('first.login.reset');
+Route::post('/first-login-reset', [UserManagementController::class, 'enforceFirstLoginReset'])->name('first.login.reset.submit');
+
 // Public user routes
-Route::middleware(['auth', 'role:public'])->prefix('public')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('public.dashboard');
+Route::middleware(['IsPublicUser'])->prefix('public')->group(function () {
+    Route::get('/dashboard', function() {
+        return view('public.dashboard');
+    })->name('public.dashboard');
     
     // Inquiry routes for public users
-    Route::get('/inquiries', [InquiryController::class, 'index'])->name('public.inquiries.index');
-    Route::get('/inquiries/create', [InquiryController::class, 'create'])->name('public.inquiries.create');
-    Route::post('/inquiries', [InquiryController::class, 'store'])->name('public.inquiries.store');
-    Route::get('/inquiries/{inquiry}', [InquiryController::class, 'show'])->name('public.inquiries.show');
+    Route::get('/inquiries', function() {
+        return view('public.inquiries.index');
+    })->name('public.inquiries.index');
+    Route::get('/inquiries/create', function() {
+        return view('public.inquiries.create');
+    })->name('public.inquiries.create');
+    Route::post('/inquiries', [InquiryManagementController::class, 'submitInquiry'])->name('public.inquiries.store');
+    Route::get('/inquiries/{inquiry}', function($inquiry) {
+        return view('public.inquiries.show', ['inquiry' => $inquiry]);
+    })->name('public.inquiries.show');
+    
+    // Profile routes
+    Route::get('/profile', function() {
+        return view('profile.show');
+    })->name('profile.show');
+    Route::get('/profile/edit', function() {
+        return view('profile.edit');
+    })->name('profile.edit');
+    Route::put('/profile', [UserManagementController::class, 'updateProfile'])->name('profile.update');
 });
 
 // Agency routes
-Route::middleware(['auth', 'role:agency'])->prefix('agency')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('agency.dashboard');
+Route::middleware(['IsAgency'])->prefix('agency')->group(function () {
+    Route::get('/dashboard', function() {
+        return view('agency.dashboard');
+    })->name('agency.dashboard');
     
     // Inquiry routes for agencies
-    Route::get('/inquiries', [InquiryController::class, 'index'])->name('agency.inquiries.index');
-    Route::get('/inquiries/{inquiry}', [InquiryController::class, 'show'])->name('agency.inquiries.show');
+    Route::get('/inquiries', function() {
+        return view('agency.inquiries.index');
+    })->name('agency.inquiries.index');
+    Route::get('/inquiries/{inquiry}', function($inquiry) {
+        return view('agency.inquiries.show', ['inquiry' => $inquiry]);
+    })->name('agency.inquiries.show');
     
     // Assignment routes for agencies
-    Route::get('/assignments', [AssignmentController::class, 'index'])->name('agency.assignments.index');
-    Route::get('/assignments/{assignment}', [AssignmentController::class, 'show'])->name('agency.assignments.show');
-    Route::post('/assignments/{assignment}/respond', [AssignmentController::class, 'respond'])->name('agency.assignments.respond');
+    Route::get('/assignments', function() {
+        return view('agency.assignments.index');
+    })->name('agency.assignments.index');
+    Route::get('/assignments/{assignment}', function($assignment) {
+        return view('agency.assignments.show', ['assignment' => $assignment]);
+    })->name('agency.assignments.show');
+    Route::post('/assignments/{assignment}/respond', function($assignment) {
+        return redirect()->back()->with('success', 'Response submitted successfully!');
+    })->name('agency.assignments.respond');
+    
+    // Profile routes
+    Route::get('/profile', function() {
+        return view('profile.show');
+    })->name('agency.profile.show');
+    Route::get('/profile/edit', function() {
+        return view('profile.edit');
+    })->name('agency.profile.edit');
+    Route::put('/profile', [UserManagementController::class, 'updateProfile'])->name('agency.profile.update');
 });
 
 // MCMC routes
-Route::middleware(['auth', 'role:mcmc'])->prefix('mcmc')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('mcmc.dashboard');
+Route::middleware(['IsMcmc'])->prefix('mcmc')->group(function () {
+    Route::get('/dashboard', function() {
+        return view('mcmc.dashboard');
+    })->name('mcmc.dashboard');
     
     // User management
-    Route::resource('users', UserController::class);
+    Route::get('/users/report', [UserManagementController::class, 'generateReport'])->name('users.report');
     
     // Agency management
-    Route::resource('agencies', AgencyController::class);
+    Route::get('/agencies/create', function() {
+        return view('mcmc.agencies.create');
+    })->name('agencies.create');
+    Route::post('/agencies', [UserManagementController::class, 'registerAgency'])->name('agencies.store');
+    Route::get('/agencies', function() {
+        return view('mcmc.agencies.index');
+    })->name('agencies.index');
     
     // Inquiry management
-    Route::get('/inquiries', [InquiryController::class, 'index'])->name('mcmc.inquiries.index');
-    Route::get('/inquiries/filter', [InquiryController::class, 'filter'])->name('mcmc.inquiries.filter');
-    Route::get('/inquiries/{inquiry}', [InquiryController::class, 'show'])->name('mcmc.inquiries.show');
-    Route::post('/inquiries/{inquiry}/status', [InquiryController::class, 'updateStatus'])->name('mcmc.inquiries.status');
+    Route::get('/inquiries', [InquiryManagementController::class, 'filterInquiries'])->name('mcmc.inquiries.index');
+    Route::get('/inquiries/filter', [InquiryManagementController::class, 'filterInquiries'])->name('mcmc.inquiries.filter');
+    Route::get('/inquiries/report', [InquiryManagementController::class, 'generateReport'])->name('mcmc.inquiries.report');
+    Route::get('/inquiries/export/{format}', [InquiryManagementController::class, 'exportReport'])->name('mcmc.inquiries.export');
+    Route::get('/inquiries/{inquiry}', function($inquiry) {
+        return view('mcmc.inquiries.show', ['inquiry' => $inquiry]);
+    })->name('mcmc.inquiries.show');
     
     // Assignment management
-    Route::get('/assignments', [AssignmentController::class, 'index'])->name('mcmc.assignments.index');
-    Route::get('/inquiries/{inquiry}/assignments/create', [AssignmentController::class, 'create'])->name('mcmc.assignments.create');
-    Route::post('/inquiries/{inquiry}/assignments', [AssignmentController::class, 'store'])->name('mcmc.assignments.store');
-    Route::get('/assignments/{assignment}', [AssignmentController::class, 'show'])->name('mcmc.assignments.show');
-    Route::post('/assignments/{assignment}/reassign', [AssignmentController::class, 'reassign'])->name('mcmc.assignments.reassign');
+    Route::post('/inquiries/{inquiry}/assign', [AssignmentManagementController::class, 'assignAgency'])->name('mcmc.inquiries.assign');
+    Route::post('/inquiries/{inquiry}/reject', [AssignmentManagementController::class, 'rejectInquiry'])->name('mcmc.inquiries.reject');
+    Route::get('/jurisdiction', [AssignmentManagementController::class, 'getJurisdiction'])->name('mcmc.jurisdiction');
+    Route::get('/assignments/report', [AssignmentManagementController::class, 'generateAssignmentReport'])->name('mcmc.assignments.report');
     
-    // Report generation
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/create', [ReportController::class, 'create'])->name('reports.create');
-    Route::post('/reports/users', [ReportController::class, 'generateUserReport'])->name('reports.users');
-    Route::post('/reports/inquiries', [ReportController::class, 'generateInquiryReport'])->name('reports.inquiries');
-    Route::post('/reports/assignments', [ReportController::class, 'generateAssignmentReport'])->name('reports.assignments');
-    Route::get('/reports/{report}', [ReportController::class, 'show'])->name('reports.show');
-    Route::get('/reports/{report}/download', [ReportController::class, 'download'])->name('reports.download');
-    
-    // Charts
-    Route::get('/charts/inquiries', [ReportController::class, 'inquiryCharts'])->name('charts.inquiries');
-    Route::get('/charts/assignments', [ReportController::class, 'assignmentCharts'])->name('charts.assignments');
+    // Profile routes
+    Route::get('/profile', function() {
+        return view('profile.show');
+    })->name('mcmc.profile.show');
+    Route::get('/profile/edit', function() {
+        return view('profile.edit');
+    })->name('mcmc.profile.edit');
+    Route::put('/profile', [UserManagementController::class, 'updateProfile'])->name('mcmc.profile.update');
 });
-
-// Common routes (accessible by all authenticated users)
-Route::middleware('auth')->group(function () {
-    // Status updates - restrict to appropriate roles
-    Route::middleware('role_or_permission:mcmc|agency|public')->group(function () {
-        Route::get('/inquiries/{inquiry}/status', [StatusController::class, 'index'])->name('status.index');
-    });
-    
-    // Only MCMC and Agency can add status updates
-    Route::middleware('role_or_permission:mcmc|agency')->group(function () {
-        Route::post('/inquiries/{inquiry}/status', [StatusController::class, 'store'])->name('status.store');
-    });
-    
-    // Debug route to check user roles
-    Route::get('/check-role', function() {
-        $user = Auth::user();
-        $roles = $user->getRoleNames();
-        return response()->json([
-            'user' => $user->name,
-            'email' => $user->email,
-            'roles' => $roles,
-            'has_mcmc_role' => $user->hasRole('mcmc'),
-            'has_agency_role' => $user->hasRole('agency'),
-            'has_public_role' => $user->hasRole('public')
-        ]);
-    });
-});
-=======
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('/agency', [AgencyController::class,'index'])->name('agencies.index');
-Route::get('/agency/create', [AgencyController::class,'create'])->name('agencies.create');
-Route::post('/agency', [AgencyController::class,'store'])->name('agencies.store');
->>>>>>> d86407c6485f806f82db76534c623a599cf91bb0
